@@ -3,19 +3,15 @@ import ReactDOM from "react-dom"
 import marked from "marked"
 import $ from 'jquery';
 
-var data = null;
+var styleData = null;
 
 var Input = React.createClass({
-  rawMarkup: function() {
-    var rawMarkup = marked(this.state.typed.toString(), {sanitize: true, gfm: true, breaks: true});
-    return { __html: rawMarkup };
-  },
   getInitialState: function() {
     return {typed: ''};
   },
+
   onChange: function(event) {
     this.setState({typed: event.target.value});
-    var data = event.target.value
   },
 
   handleSubmit: function(e) {
@@ -25,7 +21,8 @@ var Input = React.createClass({
 
   sendFormData: function () {
     var formData = {
-      text: this.state.typed
+      text: this.state.typed,
+      style: styleData
     }
     $.ajax({
       url: this.props.url,
@@ -40,6 +37,7 @@ var Input = React.createClass({
       }.bind(this)
     });
   },
+
   render: function() {
     return (
       <div>
@@ -47,15 +45,54 @@ var Input = React.createClass({
           <textarea onChange={this.onChange} />
           <input type="submit" value="Post" />
         </form>
-        <div>
-          <span dangerouslySetInnerHTML={this.rawMarkup()} />
-        </div>
+        <Preview text={this.state.typed}/>
+      </div>
+    );
+  }
+});
+
+var Preview = React.createClass({
+  rawMarkup: function() {
+    var rawMarkup = marked(this.props.text.toString(), {sanitize: true, gfm: true, breaks: true});
+    return { __html: rawMarkup };
+  },
+
+  render : function () {
+    return (
+      <div>
+        <span dangerouslySetInnerHTML={this.rawMarkup()} />
+      </div>
+    );
+  }
+});
+
+var Styles = React.createClass ({
+  getInitialState: function() {
+    return {typed: ''};
+  },
+
+  onChange: function(event) {
+    this.setState({typed: event.target.value});
+    styleData = event.target.value;
+    console.log(styleData);
+  },
+
+  render: function () {
+    return (
+      <div>
+        <textarea onChange={this.onChange} />
+        <style>
+          {this.state.typed}
+        </style>
       </div>
     );
   }
 });
 
 ReactDOM.render(
-  <Input url="/send"/>,
-  document.getElementById('content')
+  <Input url="/send"/>, document.getElementById('content')
+);
+
+ReactDOM.render(
+  <Styles />, document.getElementById('styles')
 );
