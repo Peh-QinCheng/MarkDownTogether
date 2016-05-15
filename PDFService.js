@@ -8,7 +8,7 @@ var source = fs.readFileSync('./template.html', 'utf8');
 var template = handlebars.compile(source);
 var options = {
   format: "A4",
-  base: path.join('file:///',__dirname, 'app/base.css'),
+  base: path.join('file:///',__dirname, 'base.css'),
   border: "30px"
 };
 
