@@ -2,8 +2,7 @@ module.exports = {
   context: __dirname + "/app",
   entry: {
     javascript: "./app.js",
-    html: "./index.html",
-    css: "./base.css"
+    html: "./index.html"
   },
 
   output: {
@@ -26,11 +25,7 @@ module.exports = {
       {
         test: /\.html$/,
         loader: "file?name=[name].[ext]",
-      },
-      {
-        test: /\.css$/,
-        loader: "file?name=[name].[ext]",
-      },
+      }
     ],
   },
 }
