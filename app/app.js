@@ -3,15 +3,29 @@ import ReactDOM from "react-dom"
 import marked from "marked"
 import $ from 'jquery';
 
+
+var socket = require('socket.io-client')('http://localhost:8080');
+
 var styleData = null;
 
 var Input = React.createClass({
+
+  componentDidMount() {
+    socket.on('text', this.editInput);
+  },
+
+  editInput : function(data) {
+    console.log(data);
+    this.setState({value: data.text});
+  },
+
   getInitialState: function() {
-    return {typed: ''};
+    return {value: ''};
   },
 
   onChange: function(event) {
-    this.setState({typed: event.target.value});
+    socket.emit('text edited', { text: event.target.value});
+    this.setState({value: event.target.value});
   },
 
   handleSubmit: function(e) {
@@ -21,7 +35,7 @@ var Input = React.createClass({
 
   sendFormData: function () {
     var formData = {
-      text: this.state.typed,
+      text: this.state.value,
       style: styleData
     }
     $.ajax({
@@ -42,10 +56,10 @@ var Input = React.createClass({
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <textarea onChange={this.onChange} />
-          <input type="submit" value="Post" />
+          <textarea value={this.state.value} onChange={this.onChange} />
+          <input className= "waves-effect waves-light btn" type="submit" value="Post" />
         </form>
-        <Preview text={this.state.typed}/>
+        <Preview text={this.state.value}/>
       </div>
     );
   }
@@ -67,22 +81,32 @@ var Preview = React.createClass({
 });
 
 var Styles = React.createClass ({
+
+  componentDidMount() {
+    socket.on('css', this.editInput);
+  },
+
+  editInput : function(data) {
+    console.log(data);
+    this.setState({value: data.text});
+  },
+
   getInitialState: function() {
-    return {typed: ''};
+    return {value: ''};
   },
 
   onChange: function(event) {
-    this.setState({typed: event.target.value});
+    this.setState({value: event.target.value});
     styleData = event.target.value;
-    console.log(styleData);
+    socket.emit('css edited', { text: event.target.value});
   },
 
   render: function () {
     return (
       <div>
-        <textarea onChange={this.onChange} />
+        <textarea value={this.state.value} onChange={this.onChange} />
         <style>
-          {this.state.typed}
+          {this.state.value}
         </style>
       </div>
     );
