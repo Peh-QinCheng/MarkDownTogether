@@ -1,5 +1,6 @@
 var express = require('express');
 var path =  require('path');
+var fs = require('fs');
 var bodyParser = require('body-parser');
 var PDFService = require('./PDFService');
 var app = express();
@@ -11,6 +12,9 @@ app.use('/', express.static(path.join(__dirname, 'dist')));
 
 app.post('/send', function (req, res) {
   //handle req.body.styles
+  fs.appendFile('base.css', req.body.style, (err) => {
+    if (err) throw err;
+  });
   PDFService.run(req.body.text);
   return res.send({status: 'OK'});
 });
