@@ -54,8 +54,8 @@ var Input = React.createClass({
 
   render: function() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
+      <div className="row">
+        <form className="col s6" onSubmit={this.handleSubmit}>
           <textarea value={this.state.value} onChange={this.onChange} />
           <input className= "waves-effect waves-light btn" type="submit" value="Post" />
         </form>
@@ -73,8 +73,8 @@ var Preview = React.createClass({
 
   render : function () {
     return (
-      <div>
-        <span dangerouslySetInnerHTML={this.rawMarkup()} />
+      <div className ="col s6">
+        <span className="preview" dangerouslySetInnerHTML={this.rawMarkup()} />
       </div>
     );
   }
